@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple, responsive web application to get real-time and next 7 days weather information for any city in the world.  
+A simple, responsive web application to get real-time and next 7 days weather information for any city in the world.
 Check current temperature, weather conditions, humidity, wind speed, and more.
 
 ## Usage
@@ -12,10 +12,10 @@ Check current temperature, weather conditions, humidity, wind speed, and more.
 4. View the current weather information
 
 ## Features
-- Real-time weather information  
-- 7-day weather forecast  
-- Responsive design for desktop and mobile  
-- Simple and intuitive user interface  
+- Real-time weather information
+- 7-day weather forecast
+- Responsive design for desktop and mobile
+- Simple and intuitive user interface
 
 
 ## Contact
