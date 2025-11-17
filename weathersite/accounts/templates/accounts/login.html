@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+
+{% block content %}
+<h2>Sign In</h2>
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+
+<form method="post">
+  {% csrf_token %}
+  <p>
+    <label for="id_username">Username or Email:</label>
+    <input type="text" name="username" id="id_username" required
+      style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+  </p>
+  <p>
+    <label for="id_password">Password:</label>
+    <input type="password" name="password" id="id_password" required
+      style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+  </p>
+  <button type="submit"
+    style="width: 100%; padding: 10px; background-color: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px;">Sign
+    In</button>
+</form>
+
+
+
+<p style="text-align: center; margin-top: 20px; font-size: 14px;">
+  Don't have an account? <a href="{% url 'accounts:signup' %}">Sign up here</a>
+</p>
+</div>
+{% endblock %}
