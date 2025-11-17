@@ -1,5 +1,17 @@
 # Sunlit
 
+## Start project
+
+```powershell
+cd WeatherProject
+python -m venv Sunlit
+Sunlit\Scripts\activate.bat
+python -m pip install Django
+pip install pre-commit
+cd weathersite
+python manage.py runserver
+```
+
 ## Description
 
 A simple, responsive web application to get real-time and next 7 days weather information for any city in the world.
