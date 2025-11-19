@@ -16,16 +16,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
     "accounts",
     "weather",
 ]
 
-SITE_ID = 1
 
 # Email - for development print emails to console. Replace in production.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -39,7 +33,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "weathersite.urls"
@@ -80,18 +73,6 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# # Authentication backends - allauth + Django default
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# ]
-
-# # Allauth settings
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-# ACCOUNT_EMAIL_VERIFICATION = 'optional'
-# LOGIN_REDIRECT_URL = '/'
-# ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 # Email - file-based backend saves emails to disk for testing
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
