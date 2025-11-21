@@ -22,8 +22,7 @@ INSTALLED_APPS = [
 
 
 # Email - for development print emails to console. Replace in production.
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "webmaster@localhost"
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -74,7 +73,9 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# Email - file-based backend saves emails to disk for testing
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = r"C:\Users\Admin\Desktop\WeatherProject\weathersite\sent_emails"
-DEFAULT_FROM_EMAIL = "webmaster@localhost"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "yourmail@gmail.com"
+EMAIL_HOST_PASSWORD = "qvnkmrjwkmptacps"

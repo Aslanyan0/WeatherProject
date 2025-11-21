@@ -1,0 +1,6 @@
+<form method="post">
+    {% csrf_token %}
+    <h2>Enter Code</h2>
+    <input type="text" name="code" placeholder="6-digit code" required>
+    <button type="submit">Verify</button>
+</form>

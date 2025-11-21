@@ -1,10 +1,87 @@
 {% extends 'base.html' %}
 
+{% block navbar %}{% endblock %}
+
 {% block content %}
-<h2>Sign up</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Sign up</button>
-</form>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .signup-back {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    width: 350px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+
+  .signup-back h2 {
+    margin-bottom: 30px;
+  }
+
+  .signup-back input[type="text"],
+  .signup-back input[type="email"],
+  .signup-back input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .signup-back button {
+    width: 100%;
+    background-color: #0066ff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .signup-back button:hover {
+    background-color: #0052cc;
+  }
+
+  .signin {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .signin a {
+    color: #0066ff;
+    text-decoration: none;
+  }
+
+  .signin a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="signup-back">
+  <h2>Sign Up</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Name" id="id_username" required>
+    <input type="email" name="email" placeholder="Email" id="id_email" required>
+    <input type="password" name="password" placeholder="Password" id="id_password" required>
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <div class="signin">
+    Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a>
+  </div>
+</div>
+
 {% endblock %}
