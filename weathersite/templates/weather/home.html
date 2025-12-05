@@ -1,6 +1,242 @@
-{% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-  <h1>Weather App Home</h1>
-  <p>Welcome to the weather app. Use the links to sign up or log in.</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="{% static 'css_files/home.css' %}">
+
+</head>
+
+<body>
+
+    <header>
+        <div style="font-size: 45px; font-weight: 300;">
+            Sunlit<br>
+            <span id="current-time" style="font-size: 16px; opacity: 0.7;"></span>
+        </div>
+
+        <div class="nav-menu">
+            <div id="today-tab" class="active">Today</div>
+            <div id="tomorrow-tab">Tomorrow</div>
+            <div id="weekly-tab">Weakly Forecast</div>
+        </div>
+
+        <a href="{% url 'accounts:login' %}"
+            style="font-size: 20px; color: #fff; text-decoration: none; align-self: center;">
+            Sign In
+        </a>
+
+    </header>
+    <div class="search-container">
+        <div class="search-bar">
+            <form method="get" style="display: flex; align-items: center; width: 100%;">
+                <img src="{% static 'weather_icons/search-logo.png' %}" alt="search">
+                <input id="searchInput" type="text" name="city" placeholder="Search location..." style="
+                border: none;
+                background: transparent;
+                outline: none;
+                width: 100%;
+                font-size: 16px;
+                color: #555;
+            ">
+            </form>
+        </div>
+
+        <div id="suggestions" class="suggestions-box"></div>
+    </div>
+
+
+
+    <div class="carousel-container">
+        <div class="arrow-btn">❮</div>
+
+        <div class="weather-card">
+            <div class="weather-header">{{ city }}📍<br>
+
+                <span id="weather-date" style="font-size: 14px; opacity: 0.7;"></span>
+            </div>
+
+            <div class="weather-center">
+                {%if description == "broken clouds" or description == "overcast clouds"%}
+                <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
+                {%elif description == "clear sky"%}
+                <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
+                {%elif description == " few clouds"%}
+                <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
+                {%elif description == "scattered clouds"%}
+                <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
+                {%elif description == "shower rain"%}
+                <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
+                {%elif description == "rain"%}
+                <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
+                {%elif description == "thunderstorm"%}
+                <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
+                {%elif description == "snow"%}
+                <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
+                {%elif description == "mist"%}
+                <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
+                {%endif%}
+                <div class="weather-temp">{{ temperature|floatformat:0 }}°C</div>
+
+            </div>
+
+            <div class="weather-stats">
+                <div class="stat-block"><span>HUMIDITY</span><br>{{humidity}}</div>
+                <div class="stat-block"><span>VISIBILITY</span><br>{{visibility}}</div>
+                <div class="stat-block"><span>AIR PRESSURE</span><br>{{ air_pressure }}</div>
+                <div class="stat-block"><span>WIND</span><br>{{speed}}</div>
+            </div>
+        </div>
+
+        <div class="arrow-btn">❯</div>
+    </div>
+
+    <div class="hourly-container">
+        {% for h in hourly %}
+        <div class="hour-box">
+            <div class="hour-time">
+                {{ h.dt_txt|slice:"11:16" }}
+            </div>
+
+            {%if h.weather.0.description == "broken clouds" or h.weather.0.description == "overcast clouds"%}
+            <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
+            {%elif h.weather.0.description == "clear sky"%}
+            <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
+            {%elif h.weather.0.description == " few clouds"%}
+            <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
+            {%elif h.weather.0.description == "scattered clouds"%}
+            <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
+            {%elif h.weather.0.description == "shower rain"%}
+            <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
+            {%elif h.weather.0.description == "rain"%}
+            <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
+            {%elif h.weather.0.description == "thunderstorm"%}
+            <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
+            {%elif h.weather.0.description == "snow"%}
+            <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
+            {%elif h.weather.0.description == "mist"%}
+            <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
+            {%else%}
+            <img src="{% static 'weather_icons/few-cloud.png' %}" alt="icon">
+            {%endif%}
+
+            <div class="hour-temp">
+                {{ h.main.temp|floatformat:0 }}°C
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 20px; font-size: 22px;">Sunlit</div>
+        <div style="margin-top: 20px;">
+            <img src="logos/instagram-logo.png" alt="Instagram" style="width:28px; margin-right:15px;">
+            <img src="logos/facebook-logo.png" alt="Facebook" style="width:28px;">
+        </div>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const timeElement = document.getElementById('current-time');
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            const ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            timeElement.textContent = hours + ':' + minutes + ' ' + ampm;
+        }
+
+        function updateDate(offset = 0) {
+            const dateElement = document.getElementById('weather-date');
+            const now = new Date();
+            now.setDate(now.getDate() + offset); // offset 0 = today, 1 = tomorrow
+
+            const options = { month: 'short', day: 'numeric', weekday: 'short' };
+            dateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Обновляем сразу и каждую минуту
+        updateTime();
+        setInterval(updateTime, 60000);
+
+        // По умолчанию показываем Tomorrow
+        updateDate(0);
+
+        // Переключение Today/Tomorrow
+        const todayTab = document.getElementById('today-tab');
+        const tomorrowTab = document.getElementById('tomorrow-tab');
+        const weeklyTab = document.getElementById('weekly-tab');
+
+        function clearActiveTabs() {
+            todayTab.classList.remove('active');
+            tomorrowTab.classList.remove('active');
+            weeklyTab.classList.remove('active');
+        }
+
+        // Today → offset = 0
+        todayTab.addEventListener('click', () => {
+            clearActiveTabs();
+            todayTab.classList.add('active');
+            updateDate(0); // Сегодня
+        });
+
+        // Tomorrow → offset = 1
+        tomorrowTab.addEventListener('click', () => {
+            clearActiveTabs();
+            tomorrowTab.classList.add('active');
+            updateDate(1); // Завтра
+        });
+
+        // Weekly Forecast → offset = null или своя логика
+        weeklyTab.addEventListener('click', () => {
+            clearActiveTabs();
+            weeklyTab.classList.add('active');
+            const dateElement = document.getElementById('weather-date');
+            // Пример: показать текущую неделю
+            const now = new Date();
+            const firstDay = new Date(now.setDate(now.getDate() - now.getDay()));
+            const lastDay = new Date(now.setDate(now.getDate() - now.getDay() + 6));
+            const options = { month: 'short', day: 'numeric' };
+            dateElement.textContent = `${firstDay.toLocaleDateString('en-US', options)} - ${lastDay.toLocaleDateString('en-US', options)}`;
+        });
+        let timer = null;
+
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const query = this.value.trim();
+            const suggestions = document.getElementById("suggestions");
+
+            if (query.length < 2) {
+                suggestions.innerHTML = "";
+                return;
+            }
+
+            fetch(`/autocomplete?query=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(list => {
+                    suggestions.innerHTML = "";
+
+                    list.forEach(city => {
+                        const item = document.createElement("div");
+                        item.classList.add("suggestion-item");
+
+                        item.textContent = `${city.city}${city.region ? ", " + city.region : ""}, ${city.country_code}`;
+
+                        item.onclick = () => {
+                            document.getElementById("searchInput").value = city.city;
+                            suggestions.innerHTML = "";
+                            window.location.href = `/?city=${city.city}`;
+                        };
+
+                        suggestions.appendChild(item);
+                    });
+                });
+        });
+
+    </script>
+
+</body>
+
+</html>
 {% endblock %}
