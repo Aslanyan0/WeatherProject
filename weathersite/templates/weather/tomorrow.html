@@ -16,7 +16,7 @@
         </div>
 
         <div class="nav-menu">
-            <div id="today-tab" ><a href="{% url 'home' %}">Home</a></div>
+            <div id="today-tab"><a href="{% url 'home' %}">Today</a></div>
             <div id="tomorrow-tab" class="active"> <a href="{% url 'tomorrow' %}">Tomorrow</a></div>
         </div>
 
@@ -189,6 +189,36 @@
                 })
                 .catch(err => console.error("Error loading tomorrow:", err));
         }
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const query = this.value.trim();
+            const suggestions = document.getElementById("suggestions");
+
+            if (query.length < 2) {
+                suggestions.innerHTML = "";
+                return;
+            }
+
+            fetch(`/autocomplete?query=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(list => {
+                    suggestions.innerHTML = "";
+
+                    list.forEach(city => {
+                        const item = document.createElement("div");
+                        item.classList.add("suggestion-item");
+
+                        item.textContent = `${city.city}${city.region ? ", " + city.region : ""}, ${city.country_code}`;
+
+                        item.onclick = () => {
+                            document.getElementById("searchInput").value = city.city;
+                            suggestions.innerHTML = "";
+                            window.location.href = `/?city=${city.city}`;
+                        };
+
+                        suggestions.appendChild(item);
+                    });
+                });
+        });
 
 
     </script>

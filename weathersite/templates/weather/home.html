@@ -16,7 +16,7 @@
         </div>
 
         <div class="nav-menu">
-            <div id="today-tab" class="active"><a href="{% url 'home' %}">Home</a></div>
+            <div id="today-tab" class="active"><a href="{% url 'home' %}">Today</a></div>
             <div id="tomorrow-tab"> <a href="{% url 'tomorrow' %}">Tomorrow</a></div>
         </div>
 
@@ -156,14 +156,13 @@
             dateElement.textContent = now.toLocaleDateString('en-US', options);
         }
 
-        // Обновляем сразу и каждую минуту
         updateTime();
         setInterval(updateTime, 60000);
 
-        // По умолчанию показываем Tomorrow
+
         updateDate(0);
 
-        // Переключение Today/Tomorrow
+        //Today/Tomorrow
         const todayTab = document.getElementById('today-tab');
         const tomorrowTab = document.getElementById('tomorrow-tab');
         const weeklyTab = document.getElementById('weekly-tab');

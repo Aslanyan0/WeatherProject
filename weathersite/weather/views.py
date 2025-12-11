@@ -10,7 +10,6 @@ API_KEY = "0f57bed10657b67a10861b1642817e6d"
 
 
 def home(request):
-
     city = request.GET.get("city", "Yerevan")
 
     weather_url = (
@@ -19,6 +18,11 @@ def home(request):
     )
     weather_res = requests.get(weather_url).json()
 
+    # city = SavedCity{
+    #     "name": weather_res.get(city),
+    #     "country": weather_res.get("country", ""),
+    # }
+    print(weather_res)
     if "main" not in weather_res:
         return render(
             request, "weather/home.html", {"error": "City not found", "city": city}
@@ -50,60 +54,78 @@ def home(request):
 def tomorrow(request):
     city = request.GET.get("city", "Yerevan")
 
-    # get geo data
-    geo_url = (
-        f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={API_KEY}"
-    )
-    geo_data = requests.get(geo_url).json()
-
-    if not geo_data:
-        return JsonResponse({"error": "City not found"})
-
-    lat = geo_data[0]["lat"]
-    lon = geo_data[0]["lon"]
-
-    # get weather data
-    weather_url = (
-        f"https://api.open-meteo.com/v1/forecast?"
-        f"latitude={lat}&longitude={lon}"
-        f"&hourly=temperature_2m,relative_humidity_2m,visibility,pressure_msl,wind_speed_10m,"
-        f"weathercode"
-        f"&timezone=auto"
+    forecast_url = (
+        f"https://api.openweathermap.org/data/2.5/forecast?"
+        f"q={city}&appid={API_KEY}&units=metric"
     )
 
-    data = requests.get(weather_url).json()
-    hourly = data["hourly"]
+    data = requests.get(forecast_url).json()
 
-    # ---- date ----
-    tomorrow_date = (datetime.now() + timedelta(days=1)).strftime("%a, %b %d")
+    # список прогнозов по 3 часа
+    forecasts = data["list"]
 
-    # ---- min/max ----
-    night_temps = hourly["temperature_2m"][0:7]  # 00:00–06:00
-    day_temps = hourly["temperature_2m"][12:18]  # 12:00–17:00
+    # завтра
+    tomorrow_day = (datetime.now() + timedelta(days=1)).date()
+
+    # фильтруем все записи на завтра
+    tomorrow_entries = [
+        item
+        for item in forecasts
+        if datetime.fromtimestamp(item["dt"]).date() == tomorrow_day
+    ]
+
+    # --- если данных нет ---
+    if not tomorrow_entries:
+        return HttpResponse("No forecast data for tomorrow.")
+
+    # --- ночные температуры (00:00–06:00) ---
+    night_temps = [
+        item["main"]["temp"]
+        for item in tomorrow_entries
+        if 0 <= datetime.fromtimestamp(item["dt"]).hour <= 6
+    ]
+
+    # --- дневные температуры (12:00–18:00) ---
+    day_temps = [
+        item["main"]["temp"]
+        for item in tomorrow_entries
+        if 12 <= datetime.fromtimestamp(item["dt"]).hour <= 18
+    ]
 
     temp_min_night = min(night_temps)
     temp_max_day = max(day_temps)
 
-    humidity = hourly["relative_humidity_2m"][12]
-    visibility = hourly["visibility"][12]
-    pressure = hourly["pressure_msl"][12]
-    wind = hourly["wind_speed_10m"][12]
+    # --- выбираем прогноз на 12:00 как "главный" ---
+    main_entry = next(
+        (
+            item
+            for item in tomorrow_entries
+            if datetime.fromtimestamp(item["dt"]).hour == 12
+        ),
+        tomorrow_entries[0],
+    )
 
-    # ---- icons ----
-    weather_code = hourly["weathercode"][12]
+    humidity = main_entry["main"]["humidity"]
+    visibility = main_entry.get("visibility", 0)
+    pressure = main_entry["main"]["pressure"]
+    wind = main_entry["wind"]["speed"]
+
+    weather_code = main_entry["weather"][0]["icon"]
     icon = f"/static/weather_icons/{weather_code}.png"
 
     context = {
         "city": city,
-        "date": tomorrow_date,
+        "date": tomorrow_day.strftime("%a, %b %d"),
         "temp_min_night": temp_min_night,
         "temp_max_day": temp_max_day,
-        "icon": icon,
         "humidity": humidity,
         "visibility": visibility,
         "pressure": pressure,
         "wind": wind,
+        "icon": icon,
+        "hourly": tomorrow_entries,
     }
+
     return render(request, "weather/tomorrow.html", context)
 
 
