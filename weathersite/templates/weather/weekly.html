@@ -1,7 +1,6 @@
 {% block content %}
 {% load static %}
 
-<!-- Подключаем CSS -->
 <link rel="stylesheet" href="{% static 'css_files/weekly.css' %}" />
 
 <div class="page">
@@ -31,9 +30,6 @@
 
   <section class="forecast">
     {% for day in weekly %}
-    <div class="day-card">
-      <h3>{{ day.date }}</h3>
-
       <div class="weather-center">
         {% if day.weather.0 == "broken clouds" or day.weather.0 == "overcast clouds" %}
         <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
@@ -54,8 +50,6 @@
         {% elif day.weather.0 == "mist" %}
         <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
         {% endif %}
-      </div>
-      <div class="weather-temp">{{ day.temp_max }}° / {{ day.temp_min }}°</div>
     </div>
 </div>
 {% endfor %}
@@ -64,8 +58,8 @@
 <footer>
   <div style="margin-bottom: 20px; font-size: 22px;">Sunlit</div>
   <div style="margin-top: 20px;">
-    <img src="logos/instagram-logo.png" alt="Instagram" style="width:28px; margin-right:15px;">
-    <img src="logos/facebook-logo.png" alt="Facebook" style="width:28px;">
+    <img src="{% static 'social_media/facebook-logo.png' %}" alt="Instagram" style="width:28px; margin-right:15px;">
+    <img src="{% static 'social_media/instagram-logo.png' %}" alt="Facebook" style="width:28px;">
   </div>
 </footer>
 
