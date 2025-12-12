@@ -1,198 +1,163 @@
 {% block content %}
-{%load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
 
-<head>
-  <link rel="stylesheet" href="{% static 'css_files/weekly.css' %}" />
-</head>
+<!-- Подключаем CSS -->
+<link rel="stylesheet" href="{% static 'css_files/weekly.css' %}" />
 
-<body>
-  <div class="page">
+<div class="page">
 
-    <!-- Header -->
-    <header class="header">
-      <div class="logo">
-        <h1>Sunlit</h1>
-        <span>21:00 pm</span>
-      </div>
-
-      <nav class="nav">
-        <a>Today</a>
-        <a>Tomorrow</a>
-        <a class="active">Weekly Forecast</a>
-      </nav>
-    </header>
-
-    <!-- Search -->
-    <div class="search">
-      <input type="text" placeholder="Search location..." />
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <h1>Sunlit</h1>
+      <span id="current-time"></span>
     </div>
 
-    <!-- Forecast grid -->
-    <section class="forecast">
-      <!-- card -->
-      <div class="day-card">
-        <h3>Monday</h3>
-        <div class="icon sun"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
+    <nav class="nav">
+      <a id="today-tab" href="/">Today</a>
+      <a id="tomorrow-tab" href="/tomorrow">Tomorrow</a>
+      <a id="weekly-tab" class="active" href="/weekly">Weekly Forecast</a>
+    </nav>
+  </header>
 
-      <div class="day-card">
-        <h3>Tuesday</h3>
-        <div class="icon cloud"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
-
-      <div class="day-card">
-        <h3>Wednesday</h3>
-        <div class="icon sun"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
-
-      <div class="day-card">
-        <h3>Thursday</h3>
-        <div class="icon sun"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
-
-      <div class="day-card">
-        <h3>Friday</h3>
-        <div class="icon partly"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
-
-      <div class="day-card">
-        <h3>Saturday</h3>
-        <div class="icon sun"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
-
-      <div class="day-card">
-        <h3>Sunday</h3>
-        <div class="icon storm"></div>
-        <div class="temp">3°</div>
-        <div class="desc">Sunny</div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-logo">Sunlit</div>
-      <div class="footer-links">
-        <a>Home</a>
-        <a>About</a>
-        <a>Contact us</a>
-      </div>
-    </footer>
-
+  <!-- Search -->
+  <div class="search">
+    <input id="searchInput" type="text" placeholder="Search location..." />
+    <div id="suggestions" class="suggestions"></div>
   </div>
-  <script>
-    function updateTime() {
-      const timeElement = document.getElementById('current-time');
-      const now = new Date();
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      const ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      timeElement.textContent = hours + ':' + minutes + ' ' + ampm;
-    }
 
-    function updateDate(offset = 0) {
-      const dateElement = document.getElementById('weather-date');
-      const now = new Date();
-      now.setDate(now.getDate() + offset); // offset 0 = today, 1 = tomorrow
+  <!-- Weekly date range -->
+  <div id="weather-date" class="week-range"></div>
 
-      const options = { month: 'short', day: 'numeric', weekday: 'short' };
-      dateElement.textContent = now.toLocaleDateString('en-US', options);
-    }
+  <section class="forecast">
+    {% for day in weekly %}
+    <div class="day-card">
+      <h3>{{ day.date }}</h3>
 
-    // Обновляем сразу и каждую минуту
-    updateTime();
-    setInterval(updateTime, 60000);
+      <div class="weather-center">
+        {% if day.weather.0 == "broken clouds" or day.weather.0 == "overcast clouds" %}
+        <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
+        {% elif day.weather.0 == "clear sky" %}
+        <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
+        {% elif day.weather.0 == "few clouds" %}
+        <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
+        {% elif day.weather.0 == "scattered clouds" %}
+        <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
+        {% elif day.weather.0 == "shower rain" %}
+        <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
+        {% elif day.weather.0 == "rain" %}
+        <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
+        {% elif day.weather.0 == "thunderstorm" %}
+        <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
+        {% elif day.weather.0 == "snow" %}
+        <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
+        {% elif day.weather.0 == "mist" %}
+        <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
+        {% endif %}
+      </div>
+      <div class="weather-temp">{{ day.temp_max }}° / {{ day.temp_min }}°</div>
+    </div>
+</div>
+{% endfor %}
+</section>
 
-    // По умолчанию показываем Tomorrow
-    updateDate(0);
+<footer>
+  <div style="margin-bottom: 20px; font-size: 22px;">Sunlit</div>
+  <div style="margin-top: 20px;">
+    <img src="logos/instagram-logo.png" alt="Instagram" style="width:28px; margin-right:15px;">
+    <img src="logos/facebook-logo.png" alt="Facebook" style="width:28px;">
+  </div>
+</footer>
 
-    // Переключение Today/Tomorrow
-    const todayTab = document.getElementById('today-tab');
-    const tomorrowTab = document.getElementById('tomorrow-tab');
-    const weeklyTab = document.getElementById('weekly-tab');
 
-    function clearActiveTabs() {
-      todayTab.classList.remove('active');
-      tomorrowTab.classList.remove('active');
-      weeklyTab.classList.remove('active');
-    }
+<script>
+  // ----------------------
+  // Update Current Time
+  // ----------------------
+  function updateTime() {
+    const timeElement = document.getElementById("current-time");
+    const now = new Date();
 
-    // Today → offset = 0
-    todayTab.addEventListener('click', () => {
-      clearActiveTabs();
-      todayTab.classList.add('active');
-      updateDate(0); // Сегодня
-    });
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    minutes = minutes < 10 ? "0" + minutes : minutes;
 
-    // Tomorrow → offset = 1
-    tomorrowTab.addEventListener('click', () => {
-      clearActiveTabs();
-      tomorrowTab.classList.add('active');
-      updateDate(1); // Завтра
-    });
+    const ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12 || 12;
 
-    // Weekly Forecast → offset = null или своя логика
-    weeklyTab.addEventListener('click', () => {
-      clearActiveTabs();
-      weeklyTab.classList.add('active');
-      const dateElement = document.getElementById('weather-date');
-      // Пример: показать текущую неделю
-      const now = new Date();
-      const firstDay = new Date(now.setDate(now.getDate() - now.getDay()));
-      const lastDay = new Date(now.setDate(now.getDate() - now.getDay() + 6));
-      const options = { month: 'short', day: 'numeric' };
-      dateElement.textContent = `${firstDay.toLocaleDateString('en-US', options)} - ${lastDay.toLocaleDateString('en-US', options)}`;
-    });
-    let timer = null;
+    timeElement.textContent = `${hours}:${minutes} ${ampm}`;
+  }
 
-    document.getElementById("searchInput").addEventListener("input", function () {
-      const query = this.value.trim();
-      const suggestions = document.getElementById("suggestions");
+  updateTime();
+  setInterval(updateTime, 60000);
 
-      if (query.length < 2) {
-        suggestions.innerHTML = "";
-        return;
-      }
+  // ----------------------
+  // Load Weekly Forecast
+  // ----------------------
+  function loadWeeklyWeather() {
+    const params = new URLSearchParams(window.location.search);
+    const city = params.get("city") || "Yerevan";
 
-      fetch(`/autocomplete?query=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(list => {
-          suggestions.innerHTML = "";
+    fetch(`/weekly/?city=${city}&format=json`)
+      .then((res) => res.json())
+      .then((data) => {
+        const container = document.querySelector(".forecast");
+        container.innerHTML = "";
 
-          list.forEach(city => {
-            const item = document.createElement("div");
-            item.classList.add("suggestion-item");
+        data.weekly.forEach((day) => {
+          const card = document.createElement("div");
+          card.classList.add("day-card");
 
-            item.textContent = `${city.city}${city.region ? ", " + city.region : ""}, ${city.country_code}`;
+          card.innerHTML = `
+          <h3>${day.date}</h3>
+          <img class="icon" src="${day.icon}" alt="Weather icon">
+          <div class="temp">${day.temp_min}° / ${day.temp_max}°</div>
+        `;
 
-            item.onclick = () => {
-              document.getElementById("searchInput").value = city.city;
-              suggestions.innerHTML = "";
-              window.location.href = `/?city=${city.city}`;
-            };
-
-            suggestions.appendChild(item);
-          });
+          container.appendChild(card);
         });
-    });
+      })
+      .catch((err) => console.error("Error loading weekly forecast:", err));
+  }
 
-  </script>
+  document.addEventListener("DOMContentLoaded", loadWeeklyWeather);
 
-</html>
+  // ----------------------
+  // Autocomplete Search
+  // ----------------------
+  const input = document.getElementById("searchInput");
+  const suggestions = document.getElementById("suggestions");
+
+  input.addEventListener("input", function () {
+    const query = this.value.trim();
+
+    if (query.length < 2) {
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    fetch(`/autocomplete?query=${encodeURIComponent(query)}`)
+      .then((res) => res.json())
+      .then((list) => {
+        suggestions.innerHTML = "";
+
+        list.forEach((city) => {
+          const item = document.createElement("div");
+          item.classList.add("suggestion-item");
+
+          item.textContent = `${city.city}${city.region ? ", " + city.region : ""
+            }, ${city.country_code}`;
+
+          item.onclick = () => {
+            input.value = city.city;
+            suggestions.innerHTML = "";
+            window.location.href = `/weekly?city=${city.city}`;
+          };
+
+          suggestions.appendChild(item);
+        });
+      });
+  });
+
+</script>
 {% endblock %}

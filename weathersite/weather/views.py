@@ -61,31 +61,31 @@ def tomorrow(request):
 
     data = requests.get(forecast_url).json()
 
-    # список прогнозов по 3 часа
+    # 3 hour forecasts
     forecasts = data["list"]
 
-    # завтра
+    # toмorrow's date
     tomorrow_day = (datetime.now() + timedelta(days=1)).date()
 
-    # фильтруем все записи на завтра
+    # forecast entries for tomorrow
     tomorrow_entries = [
         item
         for item in forecasts
         if datetime.fromtimestamp(item["dt"]).date() == tomorrow_day
     ]
 
-    # --- если данных нет ---
+    # if no data for tomorrow
     if not tomorrow_entries:
         return HttpResponse("No forecast data for tomorrow.")
 
-    # --- ночные температуры (00:00–06:00) ---
+    # --- night (00:00–06:00) ---
     night_temps = [
         item["main"]["temp"]
         for item in tomorrow_entries
         if 0 <= datetime.fromtimestamp(item["dt"]).hour <= 6
     ]
 
-    # --- дневные температуры (12:00–18:00) ---
+    # --- noon (12:00–18:00) ---
     day_temps = [
         item["main"]["temp"]
         for item in tomorrow_entries
@@ -95,7 +95,7 @@ def tomorrow(request):
     temp_min_night = min(night_temps)
     temp_max_day = max(day_temps)
 
-    # --- выбираем прогноз на 12:00 как "главный" ---
+    # main entry at 12:00 or first entry
     main_entry = next(
         (
             item
@@ -127,6 +127,79 @@ def tomorrow(request):
     }
 
     return render(request, "weather/tomorrow.html", context)
+
+
+def weekly(request):
+    city = request.GET.get("city", "Yerevan")
+
+    url = (
+        f"https://api.openweathermap.org/data/2.5/forecast?"
+        f"q={city}&appid={API_KEY}&units=metric&lang=en"
+    )
+
+    data = requests.get(url).json()
+
+    if data.get("cod") != "200":
+        return render(
+            request,
+            "weather/weekly.html",
+            {"city": city, "weekly": [], "error": "City not found"},
+        )
+
+    today = datetime.now().date()
+    forecasts = data["list"]
+
+    days = {}
+
+    for item in forecasts:
+        dt = datetime.fromtimestamp(item["dt"])
+        date = dt.date()
+
+        # Skip today — we need NEXT 5 days only
+        if date == today:
+            continue
+
+        temp = item["main"]["temp"]
+        humidity = item["main"]["humidity"]
+        pressure = item["main"]["pressure"]
+        wind = item["wind"]["speed"]
+        icon = item["weather"][0]["icon"]
+
+        if date not in days:
+            days[date] = {
+                "temps": [],
+                "humidity": [],
+                "pressure": [],
+                "wind": [],
+                "icons": [],
+            }
+
+        days[date]["temps"].append(temp)
+        days[date]["humidity"].append(humidity)
+        days[date]["pressure"].append(pressure)
+        days[date]["wind"].append(wind)
+        days[date]["icons"].append(icon)
+
+    # Format final 5 days
+    weekly = []
+    for date, v in list(days.items())[:5]:
+        weekly.append(
+            {
+                "date": date.strftime("%a, %b %d"),
+                "temp_min": round(min(v["temps"])),
+                "temp_max": round(max(v["temps"])),
+                "humidity": sum(v["humidity"]) // len(v["humidity"]),
+                "pressure": sum(v["pressure"]) // len(v["pressure"]),
+                "wind": round(sum(v["wind"]) / len(v["wind"]), 1),
+                "icon": f"/static/weather_icons/{max(set(v['icons']), key=v['icons'].count)}.png",
+                "weather": " / ".join(sorted(set(v["icons"]))),
+            }
+        )
+
+    if request.GET.get("format") == "json":
+        return JsonResponse({"weekly": weekly})
+
+    return render(request, "weather/weekly.html", {"city": city, "weekly": weekly})
 
 
 def autocomplete(request):
