@@ -30,26 +30,26 @@
 
   <section class="forecast">
     {% for day in weekly %}
-      <div class="weather-center">
-        {% if day.weather.0 == "broken clouds" or day.weather.0 == "overcast clouds" %}
-        <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
-        {% elif day.weather.0 == "clear sky" %}
-        <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
-        {% elif day.weather.0 == "few clouds" %}
-        <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
-        {% elif day.weather.0 == "scattered clouds" %}
-        <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
-        {% elif day.weather.0 == "shower rain" %}
-        <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
-        {% elif day.weather.0 == "rain" %}
-        <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
-        {% elif day.weather.0 == "thunderstorm" %}
-        <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
-        {% elif day.weather.0 == "snow" %}
-        <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
-        {% elif day.weather.0 == "mist" %}
-        <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
-        {% endif %}
+    <div class="weather-center">
+      {% if day.weather.0 == "broken clouds" or day.weather.0 == "overcast clouds" %}
+      <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
+      {% elif day.weather.0 == "clear sky" %}
+      <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
+      {% elif day.weather.0 == "few clouds" %}
+      <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
+      {% elif day.weather.0 == "scattered clouds" %}
+      <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
+      {% elif day.weather.0 == "shower rain" %}
+      <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
+      {% elif day.weather.0 == "rain" %}
+      <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
+      {% elif day.weather.0 == "thunderstorm" %}
+      <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
+      {% elif day.weather.0 == "snow" %}
+      <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
+      {% elif day.weather.0 == "mist" %}
+      <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
+      {% endif %}
     </div>
 </div>
 {% endfor %}
@@ -58,8 +58,12 @@
 <footer>
   <div style="margin-bottom: 20px; font-size: 22px;">Sunlit</div>
   <div style="margin-top: 20px;">
-    <img src="{% static 'social_media/facebook-logo.png' %}" alt="Instagram" style="width:28px; margin-right:15px;">
-    <img src="{% static 'social_media/instagram-logo.png' %}" alt="Facebook" style="width:28px;">
+    <a href="https://www.instagram.com/_._.sunlit_._/" style="margin-left: 15px;">
+      <img src="{% static 'social_media/instagram-logo.png' %}" alt="Instagram">
+    </a>
+    <a href="https://www.facebook.com/profile.php?id=61585156410781">
+      <img src="{% static 'social_media/facebook-logo.png' %}" alt="Facebook">
+    </a>
   </div>
 </footer>
 
