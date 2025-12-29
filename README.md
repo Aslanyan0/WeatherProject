@@ -1,15 +1,13 @@
 # Sunlit
 
 ## Start project
+Install Docker(https://www.docker.com/get-started/)
 
 ```powershell
-cd WeatherProject
-python -m venv Sunlit
-Sunlit\Scripts\activate.bat
-python -m pip install Django
-pip install pre-commit
-cd weathersite
-python manage.py runserver
+git clone https://github.com/Aslanyan0/WeatherProject.git
+cd WeatherProject/weathersite
+docker build -t image_name .
+docker run -p 8000:8000 image_name
 ```
 
 ## Description

@@ -1,0 +1,226 @@
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css_files/weekly.css' %}" />
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <h1>Sunlit</h1>
+      <span id="current-time"></span>
+    </div>
+
+    <nav class="nav">
+      <a id="today-tab" href="/">Today</a>
+      <a id="tomorrow-tab" href="/tomorrow">Tomorrow</a>
+      <a id="weekly-tab" class="active" href="/weekly">Weekly Forecast</a>
+    </nav>
+  </header>
+
+  <div class="search-container" style="position: relative; width: 400px; margin: 0 auto;">
+    <div class="search-bar" style="
+        display: flex;
+        align-items: center;
+        background: #f0f0f0;
+        padding: 8px 12px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+    ">
+      <form method="get" style="display: flex; align-items: center; width: 100%;">
+        <img src="{% static 'weather_icons/search-logo.png' %}" alt="search" style="
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        ">
+        <input id="searchInput" type="text" name="city" placeholder="Search location..." style="
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+            color: #333;
+        ">
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Error message container -->
+  {% if error %}
+  <div id="search-error" style="
+    color: #fff;
+    background-color: #e74c3c;
+    padding: 6px 10px;
+    margin-top: 3px;
+    border-radius: 4px;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.5s;
+    position: absolute; /* position relative to search bar */
+    z-index: 10;
+">
+    {{ error }}
+  </div>
+  {% else %}
+  <div id="search-error" style="display:none;"></div>
+  {% endif %}
+
+  <div id="suggestions" class="suggestions-box"></div>
+</div>
+
+</div>
+
+
+<!-- Weekly date range -->
+<div id="weather-date" class="week-range"></div>
+
+<section class="forecast">
+  {% for day in weekly %}
+  <div class="weather-center">
+    {% if day.weather_desc == "broken clouds" or day.weather_desc == "overcast clouds" %}
+    <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "clear sky" %}
+    <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "few clouds" %}
+    <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
+    {% elif day.weather_desc == "scattered clouds" %}
+    <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
+    {% elif day.weather_desc == "shower rain" %}
+    <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "rain" %}
+    <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "thunderstorm" %}
+    <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "snow" %}
+    <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "mist" %}
+    <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
+    {% else %}
+    <img src="{{ day.icon }}" alt="weather">
+    {% endif %}
+    <div>{{ day.temp_min }}° / {{ day.temp_max }}°</div>
+    <div>Humidity: {{ day.humidity }}%</div>
+    <div>Wind: {{ day.wind }} m/s</div>
+  </div>
+  {% endfor %}
+</section>
+
+
+
+<footer>
+  <div style="margin-bottom: 20px; font-size: 22px;">Sunlit</div>
+  <div style="margin-top: 20px;">
+    <a href="https://www.instagram.com/_._.sunlit_._/" style="margin-left: 15px;">
+      <img src="{% static 'social_media/instagram-logo.png' %}" alt="Instagram">
+    </a>
+    <a href="https://www.facebook.com/profile.php?id=61585156410781">
+      <img src="{% static 'social_media/facebook-logo.png' %}" alt="Facebook">
+    </a>
+  </div>
+</footer>
+
+
+<script>
+  // ----------------------
+  // Update Current Time
+  // ----------------------
+  function updateTime() {
+    const timeElement = document.getElementById("current-time");
+    const now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+
+    const ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12 || 12;
+
+    timeElement.textContent = `${hours}:${minutes} ${ampm}`;
+  }
+
+  updateTime();
+  setInterval(updateTime, 60000);
+
+  // ----------------------
+  // Load Weekly Forecast
+  // ----------------------
+  function loadWeeklyWeather() {
+    const params = new URLSearchParams(window.location.search);
+    const city = params.get("city") || "Yerevan";
+
+    fetch(`/weekly/?city=${city}&format=json`)
+      .then((res) => res.json())
+      .then((data) => {
+        const container = document.querySelector(".forecast");
+        container.innerHTML = "";
+
+        data.weekly.forEach((day) => {
+          const card = document.createElement("div");
+          card.classList.add("day-card");
+
+          card.innerHTML = `
+          <h3>${day.date}</h3>
+          <img class="icon" src="${day.icon}" alt="Weather icon">
+          <div class="temp">${day.temp_min}° / ${day.temp_max}°</div>
+        `;
+
+          container.appendChild(card);
+        });
+      })
+      .catch((err) => console.error("Error loading weekly forecast:", err));
+  }
+
+  document.addEventListener("DOMContentLoaded", loadWeeklyWeather);
+
+  // ----------------------
+  // Autocomplete Search
+  // ----------------------
+  const input = document.getElementById("searchInput");
+  const suggestions = document.getElementById("suggestions");
+
+  input.addEventListener("input", function () {
+    const query = this.value.trim();
+
+    if (query.length < 2) {
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    fetch(`/autocomplete?query=${encodeURIComponent(query)}`)
+      .then((res) => res.json())
+      .then((list) => {
+        suggestions.innerHTML = "";
+
+        list.forEach((city) => {
+          const item = document.createElement("div");
+          item.classList.add("suggestion-item");
+
+          item.textContent = `${city.city}${city.region ? ", " + city.region : ""
+            }, ${city.country_code}`;
+
+          item.onclick = () => {
+            input.value = city.city;
+            suggestions.innerHTML = "";
+            window.location.href = `/weekly?city=${city.city}`;
+          };
+
+          suggestions.appendChild(item);
+        });
+      });
+  });
+
+  // Automatically hide search error after 3 seconds
+  const errorDiv = document.getElementById("search-error");
+  if (errorDiv && errorDiv.textContent.trim() !== "") {
+    setTimeout(() => {
+      errorDiv.style.opacity = 0;
+      setTimeout(() => {
+        errorDiv.style.display = "none";
+      }, 500); // match the CSS transition
+    }, 3000); // 3 seconds
+  }
+
+</script>
+{% endblock %}

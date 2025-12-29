@@ -2,18 +2,26 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import SignUpForm
 from django.contrib import messages
+from django.contrib.auth.models import User
 
 
 def signup_view(request):
     if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("home")
-    else:
-        form = SignUpForm()
-    return render(request, "accounts/signup.html", {"form": form})
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        username = request.POST.get("username")
+
+        if User.objects.filter(email=email).exists():
+            messages.error(
+                request, "This email is already in use. Please choose another."
+            )
+            return redirect("accounts:signup")
+
+        User.objects.create_user(username=username, email=email, password=password)
+
+        return redirect("home")
+
+    return render(request, "accounts/signup.html")
 
 
 def login_view(request):
@@ -24,8 +32,10 @@ def login_view(request):
         if user is not None:
             login(request, user)
             return redirect("home")
+        # Show error
         messages.error(request, "Invalid username or password")
-        return redirect("accounts:login")
+        # Instead of redirect, render template so the message displays immediately
+        return render(request, "accounts/login.html")
     return render(request, "accounts/login.html")
 
 

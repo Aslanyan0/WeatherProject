@@ -3,4 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("autocomplete/", views.autocomplete, name="autocomplete"),
+    path("tomorrow/", views.tomorrow, name="tomorrow"),
+    path("weekly/", views.weekly, name="weekly"),
 ]
