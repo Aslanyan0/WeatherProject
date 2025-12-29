@@ -19,41 +19,95 @@
     </nav>
   </header>
 
-  <!-- Search -->
-  <div class="search">
-    <input id="searchInput" type="text" placeholder="Search location..." />
-    <div id="suggestions" class="suggestions"></div>
+  <div class="search-container" style="position: relative; width: 400px; margin: 0 auto;">
+    <div class="search-bar" style="
+        display: flex;
+        align-items: center;
+        background: #f0f0f0;
+        padding: 8px 12px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+    ">
+      <form method="get" style="display: flex; align-items: center; width: 100%;">
+        <img src="{% static 'weather_icons/search-logo.png' %}" alt="search" style="
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        ">
+        <input id="searchInput" type="text" name="city" placeholder="Search location..." style="
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+            color: #333;
+        ">
+      </form>
+    </div>
   </div>
 
-  <!-- Weekly date range -->
-  <div id="weather-date" class="week-range"></div>
 
-  <section class="forecast">
-    {% for day in weekly %}
-    <div class="weather-center">
-      {% if day.weather.0 == "broken clouds" or day.weather.0 == "overcast clouds" %}
-      <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
-      {% elif day.weather.0 == "clear sky" %}
-      <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
-      {% elif day.weather.0 == "few clouds" %}
-      <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
-      {% elif day.weather.0 == "scattered clouds" %}
-      <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
-      {% elif day.weather.0 == "shower rain" %}
-      <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
-      {% elif day.weather.0 == "rain" %}
-      <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
-      {% elif day.weather.0 == "thunderstorm" %}
-      <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
-      {% elif day.weather.0 == "snow" %}
-      <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
-      {% elif day.weather.0 == "mist" %}
-      <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
-      {% endif %}
-    </div>
+  <!-- Error message container -->
+  {% if error %}
+  <div id="search-error" style="
+    color: #fff;
+    background-color: #e74c3c;
+    padding: 6px 10px;
+    margin-top: 3px;
+    border-radius: 4px;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.5s;
+    position: absolute; /* position relative to search bar */
+    z-index: 10;
+">
+    {{ error }}
+  </div>
+  {% else %}
+  <div id="search-error" style="display:none;"></div>
+  {% endif %}
+
+  <div id="suggestions" class="suggestions-box"></div>
 </div>
-{% endfor %}
+
+</div>
+
+
+<!-- Weekly date range -->
+<div id="weather-date" class="week-range"></div>
+
+<section class="forecast">
+  {% for day in weekly %}
+  <div class="weather-center">
+    {% if day.weather_desc == "broken clouds" or day.weather_desc == "overcast clouds" %}
+    <img src="{% static 'weather_icons/cloud-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "clear sky" %}
+    <img src="{% static 'weather_icons/sunny-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "few clouds" %}
+    <img src="{% static 'weather_icons/few-cloud.png' %}" alt="weather">
+    {% elif day.weather_desc == "scattered clouds" %}
+    <img src="{% static 'weather_icons/cloud.png' %}" alt="weather">
+    {% elif day.weather_desc == "shower rain" %}
+    <img src="{% static 'weather_icons/storm-rain-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "rain" %}
+    <img src="{% static 'weather_icons/rain-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "thunderstorm" %}
+    <img src="{% static 'weather_icons/storm-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "snow" %}
+    <img src="{% static 'weather_icons/snow-logo.png' %}" alt="weather">
+    {% elif day.weather_desc == "mist" %}
+    <img src="{% static 'weather_icons/mist.png' %}" alt="weather">
+    {% else %}
+    <img src="{{ day.icon }}" alt="weather">
+    {% endif %}
+    <div>{{ day.temp_min }}° / {{ day.temp_max }}°</div>
+    <div>Humidity: {{ day.humidity }}%</div>
+    <div>Wind: {{ day.wind }} m/s</div>
+  </div>
+  {% endfor %}
 </section>
+
+
 
 <footer>
   <div style="margin-bottom: 20px; font-size: 22px;">Sunlit</div>
@@ -156,6 +210,17 @@
         });
       });
   });
+
+  // Automatically hide search error after 3 seconds
+  const errorDiv = document.getElementById("search-error");
+  if (errorDiv && errorDiv.textContent.trim() !== "") {
+    setTimeout(() => {
+      errorDiv.style.opacity = 0;
+      setTimeout(() => {
+        errorDiv.style.display = "none";
+      }, 500); // match the CSS transition
+    }, 3000); // 3 seconds
+  }
 
 </script>
 {% endblock %}

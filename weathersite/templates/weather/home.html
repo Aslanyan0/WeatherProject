@@ -28,7 +28,7 @@
         </a>
 
     </header>
-    <div class="search-container">
+    <div class="search-container" style="position: relative;">
         <div class="search-bar">
             <form method="get" style="display: flex; align-items: center; width: 100%;">
                 <img src="{% static 'weather_icons/search-logo.png' %}" alt="search">
@@ -43,9 +43,30 @@
             </form>
         </div>
 
+        <!-- Error message container -->
+        {% if error %}
+        <div id="search-error" style="
+    color: #fff;
+    background-color: #e74c3c;
+    padding: 6px 10px;
+    margin-top: 3px;
+    border-radius: 4px;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.5s;
+    position: absolute; /* position relative to search bar */
+    z-index: 10;
+">
+            {{ error }}
+        </div>
+        {% else %}
+        <div id="search-error" style="display:none;"></div>
+        {% endif %}
+
         <div id="suggestions" class="suggestions-box"></div>
     </div>
 
+    </div>
 
 
     <div class="carousel-container">
@@ -205,6 +226,18 @@
                     });
                 });
         });
+
+        // Automatically hide search error after 3 seconds
+        const errorDiv = document.getElementById("search-error");
+        if (errorDiv && errorDiv.textContent.trim() !== "") {
+            setTimeout(() => {
+                errorDiv.style.opacity = 0;
+                setTimeout(() => {
+                    errorDiv.style.display = "none";
+                }, 500); // match the CSS transition
+            }, 3000); // 3 seconds
+        }
+
 
     </script>
 

@@ -27,6 +27,13 @@
     margin-bottom: 30px;
   }
 
+  .flash-message {
+    color: #ff4d4f;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+  }
+
   .signup-back input[type="text"],
   .signup-back input[type="email"],
   .signup-back input[type="password"] {
@@ -76,12 +83,27 @@
     <input type="text" name="username" placeholder="Name" id="id_username" required>
     <input type="email" name="email" placeholder="Email" id="id_email" required>
     <input type="password" name="password" placeholder="Password" id="id_password" required>
-    <button type="submit">Sign Up</button>
+    <button id="signup-btn" type="submit">Sign Up</button>
   </form>
+
+  {% if messages %}
+  {% for message in messages %}
+  <p class="flash-message">{{ message }}</p>
+  {% endfor %}
+  {% endif %}
+
 
   <div class="signin">
     Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a>
   </div>
 </div>
+
+
+<script>
+  setTimeout(() => {
+    const msg = document.querySelector('.flash-message');
+    if (msg) msg.style.display = 'none';
+  }, 3000);
+</script>
 
 {% endblock %}

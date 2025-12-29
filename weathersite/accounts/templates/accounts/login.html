@@ -73,6 +73,19 @@
     .forgot:hover {
         text-decoration: underline;
     }
+
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+    }
+
+    .alert.error {
+        color: #ff4d4f;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 10px;
+    }
 </style>
 
 <div class="login-back">
@@ -82,10 +95,27 @@
         <input type="text" name="username" placeholder="Name or Email" id="id_username" required>
         <input type="password" name="password" placeholder="Password" id="id_password" required>
         <a href="{% url 'accounts:forgot_password' %}" class="forgot">Forgot Password?</a>
-        <button type="submit">Sign In</button>
+        <button id="login-btn" type="submit">Sign In</button>
     </form>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="signup">
         Don't have an account? <a href="{% url 'accounts:signup' %}">Sign Up</a>
     </div>
 </div>
+<script>
+    setTimeout(() => {
+        const msg = document.querySelector('.alert.error');
+        if (msg) msg.style.display = 'none';
+    }, 3000);
+</script>
+
 {% endblock %}
