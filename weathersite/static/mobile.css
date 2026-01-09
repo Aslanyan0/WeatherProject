@@ -1,0 +1,229 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #252323;
+    font-family: "Poppins", sans-serif;
+    color: #fff;
+}
+
+.app {
+    max-width: 390px;
+    width: 100%;
+    min-height: 100vh;
+    padding: 18px;
+    margin: 0 auto;
+}
+
+/* ---------- HEADER ---------- */
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.top h1 {
+    font-weight: 300;
+    font-size: 30px;
+}
+
+#current-time {
+    font-size: 14px;
+    opacity: .7;
+}
+
+.signin {
+    font-size: 14px;
+    opacity: 0.9;
+    text-decoration: none;
+    color: #fff;
+}
+
+/* ---------- TABS ---------- */
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0 18px;
+}
+
+.tabs a {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    color: #aaa;
+    font-size: 14px;
+    padding-bottom: 6px;
+}
+
+.tabs a.active {
+    color: #fff;
+    font-weight: 600;
+    border-bottom: 2px solid #00a6ff;
+}
+
+/* ---------- SEARCH ---------- */
+.search {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.search input {
+    width: 100%;
+    height: 46px;
+    border-radius: 25px;
+    border: none;
+    padding: 0 18px;
+    font-size: 16px;
+    outline: none;
+    background: #d9d9d9;
+    color: #333;
+}
+
+/* AUTOCOMPLETE */
+.suggestions {
+    position: absolute;
+    top: 52px;
+    width: 100%;
+    background: #1f1f1f;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.suggestion-item:hover {
+    background: #2c2c2c;
+}
+
+/* ---------- CARD ---------- */
+.card {
+    background: linear-gradient(180deg, #00a6ff, #067989);
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+}
+
+/* ---------- CURRENT ---------- */
+.current {
+    text-align: center;
+}
+
+.place {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.date {
+    font-size: 13px;
+    opacity: .8;
+    margin-bottom: 12px;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.main img {
+    width: 64px;
+}
+
+.temp {
+    font-size: 72px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* ---------- STATS ---------- */
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    font-size: 12px;
+    margin-top: 14px;
+}
+
+.stats span {
+    display: block;
+    opacity: .7;
+    font-size: 11px;
+}
+
+/* ---------- HOURLY ---------- */
+.hourly {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.hourly::-webkit-scrollbar {
+    display: none;
+}
+
+.hour {
+    min-width: 64px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.hour img {
+    width: 32px;
+    margin: 6px auto;
+}
+
+/* ---------- WEEKLY ---------- */
+.weekly {
+    margin-top: 10px;
+}
+
+.day {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .15);
+}
+
+.day:last-child {
+    border-bottom: none;
+}
+
+.day img {
+    width: 36px;
+}
+
+.day span,
+.day strong {
+    font-size: 15px;
+}
+
+/* ---------- FOOTER ---------- */
+.footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    opacity: .6;
+}
+
+/* ---------- SMALL TOUCH ---------- */
+.card,
+.search input {
+    transition: transform .2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
