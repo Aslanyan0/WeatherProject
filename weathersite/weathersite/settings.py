@@ -6,8 +6,8 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "replace-me-with-a-secure-key"
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ["qoworking.ru", "www.qoworking.ru", "213.199.39.254"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
