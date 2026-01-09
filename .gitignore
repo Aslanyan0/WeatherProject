@@ -31,8 +31,7 @@ local_settings.py
 db.sqlite3
 media/
 staticfiles/
-static/
-
+# static/
 # PyInstaller
 *.manifest
 *.spec

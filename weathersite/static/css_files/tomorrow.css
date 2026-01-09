@@ -1,0 +1,187 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #242323;
+    font-family: "Poppins", sans-serif;
+    color: #fff;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 70px;
+}
+
+header>div:first-child {
+    position: relative;
+    top: -5px;
+}
+
+#current-time {
+    position: absolute;
+    right: 5px;
+    top: 45px;
+    font-size: 15px;
+    opacity: 0.7;
+}
+
+/* NAVIGATION (Today/Tomorrow/Weekly) */
+.nav-menu {
+    display: flex;
+    gap: 35px;
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+    top: 10px;
+    left: 120px;
+}
+
+#today-tab>a,
+#tomorrow-tab>a,
+#weekly-tab>a {
+    text-decoration: none;
+    color: white;
+}
+
+.nav-menu .active {
+    border-bottom: 2px solid #00A6FF;
+    padding-bottom: 3px;
+}
+
+a[href*="login"] {
+    position: relative;
+    top: -10px;
+    right: -10px;
+    font-size: 20px;
+}
+
+/* SEARCH */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    width: 500px;
+    height: 48px;
+    background: #D9D9D9;
+    border-radius: 30px;
+    padding-left: 18px;
+    color: #555;
+}
+
+.search-bar img {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+}
+
+/* MAIN WEATHER CARD */
+.carousel-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.arrow-btn {
+    font-size: 35px;
+    cursor: pointer;
+}
+
+.weather-card {
+    width: 580px;
+    height: 260px;
+    border-radius: 25px;
+    padding: 25px;
+    background: linear-gradient(to right, #009CFF, #2E2E2E);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.weather-header {
+    font-size: 20px;
+}
+
+.weather-center {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.weather-center img {
+    width: 60px;
+}
+
+.weather-temp {
+    font-size: 50px;
+    font-weight: 300;
+}
+
+.weather-stats {
+    margin-top: 10px;
+    display: flex;
+    gap: 40px;
+    font-size: 13px;
+}
+
+/* HOURLY FORECAST — МЕНЬШЕ, ДАЛЬШЕ, НИЖЕ */
+.hourly-container {
+    margin-top: 40px;
+    /* опустил ниже */
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    /* увеличил расстояние между карточками */
+}
+
+.hour-card {
+    width: 70px;
+    /* меньше */
+    height: 85px;
+    /* меньше */
+    background: linear-gradient(#1FA4EC, #D9D9D900);
+    border-radius: 15px;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.hour-card img {
+    width: 38px;
+    /* уменьшил иконки */
+}
+
+/*FOOTER */
+footer {
+    margin-top: 160px;
+    padding: 35px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+footer a {
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+/* иконки соцсетей */
+footer img {
+    width: 48px;
+    height: 48px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+}
+
+/* hover-эффект */
+footer img:hover {
+    transform: scale(1.1);
+    opacity: 1;
+}
